@@ -25,14 +25,13 @@ Mel{
 	
 	*new{ arg ... kv;
 		var b=kv.asDict.collect({|v,k|
-			v.postln;
 			basePattern<>(k:k)<>v.collect({|x, i|
-				// var r=
-				[\f, \t, \set][i].asArray++x;
-				// this.perform(
-				// 	[\checkForme, \checkTemps, \checkSet][i],
-				// 	r
-				// )
+				v.postln;
+				[\f, \t, \set][i].asArray++
+				this.perform(
+					[\checkForme, \checkTemps, \checkSet][i],
+					x
+				).postln;
 			}).flat.as(Event)
 		});
 		var durTmp=b[\dur];
@@ -42,13 +41,17 @@ Mel{
 
 	*checkForme{
 		arg f;
-		f.class.postln.switch(
-			Array, {^f.iter.repeat},
-			String, {^f.convert.iter.repeat},
-			{^f}
+		f.postln;
+		^f.class.switch(
+			Array, {f.iter.repeat},
+			String, {f.convert.iter.repeat},
+			{f}
 		)
 	}
-	*checkTemps{}
-	*checkSet{}
+	*checkTemps{arg f; ^f.iter.repeat}
+	*checkSet{arg f; ^f.class.switch(
+		Range, {Pwhite(f.start, f.size)},
+		{Prand(f, inf)}
+	)}
 	
 }
